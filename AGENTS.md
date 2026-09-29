@@ -3,4 +3,4 @@ Always use these three skills for project:
  - nodejs-backend-patterns
  - web-design-guidelines
 
-and use DESIGN.md for frontend design guidelines.
+and use DESIGN.md for any design in website.

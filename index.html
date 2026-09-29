@@ -2,12 +2,450 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>uno-game-bwp</title>
+    <title>uno.io - Free Multiplayer UNO Online</title>
+    <meta name="description" content="Play UNO online with friends or smart bots in skribbl.io style! Custom avatars, real-time multiplayer, house rules, and retro graphics." />
+    <!-- Fonts: Nunito & Inconsolata -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
-  <body>
-    <div id="app"></div>
+  <body data-screen="landing">
+    <div id="app">
+
+      <!-- ========================================================
+           1. LANDING SCREEN (§5.1)
+      ======================================================== -->
+      <section class="screen" id="screen-landing" data-screen="landing">
+        <div class="landing-top">
+          <!-- skribbl-style logo -->
+          <img src="/src/assets/logo.gif" alt="UNO skribbl style logo" class="landing-logo" id="landing-logo-img" />
+
+          <!-- Row of decorative bouncing avatars -->
+          <div class="landing-avatars-row" id="landing-bouncing-avatars" aria-hidden="true"></div>
+
+          <!-- Central Form Card -->
+          <div class="landing-form-card">
+            <div class="landing-form-row">
+              <input 
+                type="text" 
+                id="player-name-input" 
+                class="landing-input-name" 
+                placeholder="Enter your name" 
+                maxlength="20" 
+                autocomplete="off"
+                aria-label="Your nickname"
+              />
+              <select id="player-lang-select" class="landing-select-lang" aria-label="Game language">
+                <option value="English">English</option>
+              </select>
+            </div>
+
+            <!-- Avatar Customizer Box -->
+            <div class="avatar-picker-box">
+              <div class="picker-col">
+                <button type="button" class="picker-arrow-btn picker-arrow-btn--left" id="prev-color-btn" aria-label="Previous color">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+                <button type="button" class="picker-arrow-btn picker-arrow-btn--left" id="prev-eye-btn" aria-label="Previous eyes">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+                <button type="button" class="picker-arrow-btn picker-arrow-btn--left" id="prev-mouth-btn" aria-label="Previous mouth">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+              </div>
+
+              <div class="avatar-preview-wrapper" id="landing-avatar-preview"></div>
+
+              <div class="picker-col">
+                <button type="button" class="picker-arrow-btn" id="next-color-btn" aria-label="Next color">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+                <button type="button" class="picker-arrow-btn" id="next-eye-btn" aria-label="Next eyes">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+                <button type="button" class="picker-arrow-btn" id="next-mouth-btn" aria-label="Next mouth">
+                  <img src="/src/assets/arrow.gif" alt="" />
+                </button>
+              </div>
+
+              <!-- Randomize Dice -->
+              <button type="button" class="picker-randomize-btn" id="randomize-avatar-btn" title="Randomize avatar" aria-label="Randomize avatar">
+                <img src="/src/assets/randomize.gif" alt="Randomize" />
+              </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <button type="button" class="btn-play" id="btn-play-public">Play!</button>
+            <button type="button" class="btn-private" id="btn-create-private">Create Private Room</button>
+          </div>
+        </div>
+
+        <!-- Slanted Royal Blue Lower Section -->
+        <div class="landing-bottom-slanted">
+          <div class="landing-cards-row">
+            <!-- About Card -->
+            <div class="info-card">
+              <div class="info-card__header">
+                <img src="/src/assets/about.gif" alt="" />
+                <h2>About</h2>
+              </div>
+              <div class="info-card__body">
+                <p><strong>uno.io</strong> is a free online multiplayer card game inspired by the legendary skribbl.io aesthetic.</p>
+                <br />
+                <p>Match cards by color or number, play tricky action cards like Skip, Reverse, and Draw Two, and shout UNO before your rivals catch you!</p>
+                <br />
+                <p>First player to empty their hand wins the round. Have fun!</p>
+              </div>
+            </div>
+
+            <!-- News Card -->
+            <div class="info-card">
+              <div class="info-card__header">
+                <img src="/src/assets/news.gif" alt="" />
+                <h2>News</h2>
+              </div>
+              <div class="info-card__body">
+                <div class="news-card-date">Fresh paint • 9th November 2026</div>
+                <p><strong>Hello card players!</strong></p>
+                <ul class="news-list">
+                  <li>Full skribbl.io visual theme with doodle background</li>
+                  <li>Multi-layer pixel avatar builder (colors, eyes, mouths)</li>
+                  <li>Action cards: Skip, Reverse, Draw 2, Wild & +4</li>
+                  <li>Instant matchmaking with smart AI bot opponents</li>
+                  <li>Private room links & custom house rules</li>
+                  <li>Sound effects with easy mute toggle</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- How to Play Card with Carousel -->
+            <div class="info-card">
+              <div class="info-card__header">
+                <img src="/src/assets/book.gif" alt="" />
+                <h2>How to play</h2>
+              </div>
+              <div class="info-card__body carousel" id="how-to-play-carousel">
+                <div class="carousel-slide active" data-slide="0">
+                  <h3>1. MATCH CARDS!</h3>
+                  <p>When it's your turn, play a card matching either the active color or number of the top discard card.</p>
+                </div>
+                <div class="carousel-slide" data-slide="1">
+                  <h3>2. ACTION CARDS!</h3>
+                  <p>Use Skip to block your opponent, Reverse to switch turns, and Draw Two (+2) to make the next player draw cards!</p>
+                </div>
+                <div class="carousel-slide" data-slide="2">
+                  <h3>3. WILD & +4!</h3>
+                  <p>Wild cards can be played on any turn to change the color. Wild Draw 4 forces the next player to draw 4 cards!</p>
+                </div>
+                <div class="carousel-slide" data-slide="3">
+                  <h3>4. SAY UNO!</h3>
+                  <p>When you have only 1 card left in your hand, press the big red UNO! button immediately!</p>
+                </div>
+                <div class="carousel-slide" data-slide="4">
+                  <h3>5. WIN THE ROUND!</h3>
+                  <p>The first player to discard all their cards wins the round and scores points from remaining opponents' cards!</p>
+                </div>
+
+                <div class="carousel-dots" id="carousel-dots-wrap">
+                  <button type="button" class="carousel-dot active" data-index="0" aria-label="Slide 1"></button>
+                  <button type="button" class="carousel-dot" data-index="1" aria-label="Slide 2"></button>
+                  <button type="button" class="carousel-dot" data-index="2" aria-label="Slide 3"></button>
+                  <button type="button" class="carousel-dot" data-index="3" aria-label="Slide 4"></button>
+                  <button type="button" class="carousel-dot" data-index="4" aria-label="Slide 5"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           2. LOBBY SCREEN (§5.2)
+      ======================================================== -->
+      <section class="screen" id="screen-lobby" data-screen="lobby">
+        <div class="game-screen-wrapper">
+          <div class="game-top-bar">
+            <img src="/src/assets/logo.gif" alt="Logo" class="game-brand-logo" />
+          </div>
+
+          <div class="game-frame">
+            <!-- White Header Bar -->
+            <header class="game-header">
+              <div class="header-left">
+                <div class="header-clock-wrap">
+                  <img src="/src/assets/clock_empty.gif" alt="Clock" class="header-clock-img" />
+                  <span class="header-clock-text">0</span>
+                </div>
+                <span class="header-round-text" id="lobby-round-title">Round 1 of 3</span>
+              </div>
+              <div class="header-status-mono">WAITING</div>
+              <div class="header-right">
+                <button type="button" class="header-gear-btn" id="lobby-gear-btn" title="Settings" aria-label="Settings">⚙️</button>
+              </div>
+            </header>
+
+            <!-- 3 Column Layout -->
+            <div class="game-columns">
+              <!-- Left: Player list -->
+              <div class="players-panel" id="lobby-player-list"></div>
+
+              <!-- Center: Settings panel -->
+              <div class="lobby-stage">
+                <div class="lobby-settings-list">
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-players">
+                      <img src="/src/assets/person.gif" alt="" class="lobby-setting-icon" />
+                      <span>Players</span>
+                    </label>
+                    <select id="setting-players" class="lobby-setting-select">
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4" selected>4</option>
+                      <option value="6">6</option>
+                      <option value="8">8</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-language">
+                      <img src="/src/assets/book.gif" alt="" class="lobby-setting-icon" />
+                      <span>Language</span>
+                    </label>
+                    <select id="setting-language" class="lobby-setting-select">
+                      <option value="English">English</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-turntime">
+                      <img src="/src/assets/clock_empty.gif" alt="" class="lobby-setting-icon" />
+                      <span>Turn time</span>
+                    </label>
+                    <select id="setting-turntime" class="lobby-setting-select">
+                      <option value="15">15</option>
+                      <option value="30" selected>30</option>
+                      <option value="45">45</option>
+                      <option value="60">60</option>
+                      <option value="80">80</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-rounds">
+                      <img src="/src/assets/dotted_circle.gif" alt="" class="lobby-setting-icon" />
+                      <span>Rounds</span>
+                    </label>
+                    <select id="setting-rounds" class="lobby-setting-select">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3" selected>3</option>
+                      <option value="5">5</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-mode">
+                      <img src="/src/assets/about.gif" alt="" class="lobby-setting-icon" />
+                      <span>Game Mode</span>
+                    </label>
+                    <select id="setting-mode" class="lobby-setting-select">
+                      <option value="Normal">Normal</option>
+                      <option value="Fast">Fast</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-starting-cards">
+                      <img src="/src/assets/two_bars.gif" alt="" class="lobby-setting-icon" />
+                      <span>Starting cards</span>
+                    </label>
+                    <select id="setting-starting-cards" class="lobby-setting-select">
+                      <option value="5">5</option>
+                      <option value="7" selected>7</option>
+                      <option value="9">9</option>
+                    </select>
+                  </div>
+
+                  <div class="lobby-setting-row">
+                    <label class="lobby-setting-label" for="setting-house-rules">
+                      <img src="/src/assets/white_que_mark.gif" alt="" class="lobby-setting-icon" />
+                      <span>House rules</span>
+                    </label>
+                    <select id="setting-house-rules" class="lobby-setting-select">
+                      <option value="none">Standard Official</option>
+                      <option value="stacking">Stacking (+2/+4)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Custom rules box -->
+                <div class="lobby-custom-rules">
+                  <div class="lobby-custom-rules-header">
+                    <span>Custom rules</span>
+                    <label>
+                      <input type="checkbox" id="lobby-custom-only-checkbox" /> Use custom rules only
+                    </label>
+                  </div>
+                  <textarea 
+                    class="lobby-custom-rules-textarea" 
+                    id="lobby-custom-rules-input" 
+                    placeholder="Minimum of 1 rule. House rules & special variations separated by a comma (,)"
+                  ></textarea>
+                </div>
+
+                <!-- Lobby Bottom Actions -->
+                <div class="lobby-bottom-actions">
+                  <button type="button" class="btn-start-game" id="btn-lobby-start">Start!</button>
+                  <button type="button" class="btn-invite" id="btn-lobby-invite">
+                    <img src="/src/assets/link.svg" alt="" />
+                    <span id="invite-btn-text">Invite</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right: Chat panel -->
+              <div class="chat-column" id="lobby-chat-column"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           3. GAME SCREEN (§5.3)
+      ======================================================== -->
+      <section class="screen" id="screen-game" data-screen="game">
+        <div class="game-screen-wrapper">
+          <div class="game-top-bar">
+            <img src="/src/assets/logo.gif" alt="Logo" class="game-brand-logo" />
+          </div>
+
+          <div class="game-frame">
+            <!-- White Header Bar -->
+            <header class="game-header">
+              <div class="header-left">
+                <div class="header-clock-wrap" id="game-clock-wrap">
+                  <img src="/src/assets/clock.gif" alt="Clock" class="header-clock-img" id="game-clock-img" />
+                  <span class="header-clock-text" id="game-clock-text">30</span>
+                </div>
+                <span class="header-round-text" id="game-round-title">Round 1 of 3</span>
+              </div>
+              <div class="header-status-mono" id="game-status-mono">YOUR TURN</div>
+              <div class="header-right">
+                <button type="button" class="header-gear-btn" id="game-gear-btn" title="Settings" aria-label="Settings">⚙️</button>
+              </div>
+            </header>
+
+            <!-- Settings Popover -->
+            <div class="settings-popover" id="settings-popover">
+              <div class="popover-item">
+                <span>Sound effects</span>
+                <input type="checkbox" id="toggle-sound-btn" checked />
+              </div>
+              <button type="button" class="popover-btn" id="btn-leave-game">Leave room</button>
+            </div>
+
+            <!-- 3 Column Layout -->
+            <div class="game-columns">
+              <!-- Left: Player list -->
+              <div class="players-panel" id="game-player-list"></div>
+
+              <!-- Center: Game Stage (800x600) -->
+              <div class="game-stage" id="game-stage">
+                <!-- Top-Right Reactions -->
+                <div class="stage-reactions">
+                  <button type="button" class="reaction-btn" id="btn-react-thumbsup" title="Thumbs Up" aria-label="Thumbs up">👍</button>
+                  <button type="button" class="reaction-btn" id="btn-react-thumbsdown" title="Thumbs Down" aria-label="Thumbs down">👎</button>
+                </div>
+
+                <!-- Center Table: Draw Pile, Discard Pile & Direction Arrow -->
+                <div class="stage-center-table">
+                  <div class="pile-slot pile-slot--draw" id="draw-pile-slot"></div>
+                  
+                  <img src="/src/assets/arrow.gif" alt="Direction" class="direction-indicator clockwise" id="stage-direction-indicator" />
+
+                  <div class="pile-slot pile-slot--discard" id="discard-pile-slot"></div>
+                </div>
+
+                <!-- Hand Area (Bottom) -->
+                <div class="stage-player-hand" id="player-hand-container">
+                  <div class="hand-cards-row" id="player-hand-row"></div>
+                </div>
+
+                <!-- Big Red UNO! Button -->
+                <button type="button" class="uno-call-btn disabled" id="btn-say-uno" disabled>UNO!</button>
+
+                <!-- Color Chooser Overlay (When playing Wild) -->
+                <div class="stage-overlay" id="overlay-color-chooser">
+                  <h2 class="overlay-title">Choose a color!</h2>
+                  <div class="color-chooser-grid">
+                    <button type="button" class="color-choice-square color-choice-square--red" data-color="red" aria-label="Choose Red"></button>
+                    <button type="button" class="color-choice-square color-choice-square--yellow" data-color="yellow" aria-label="Choose Yellow"></button>
+                    <button type="button" class="color-choice-square color-choice-square--green" data-color="green" aria-label="Choose Green"></button>
+                    <button type="button" class="color-choice-square color-choice-square--blue" data-color="blue" aria-label="Choose Blue"></button>
+                  </div>
+                </div>
+
+                <!-- Announcement Overlay ("Jimmy is choosing a color!") -->
+                <div class="stage-overlay" id="overlay-announcement">
+                  <h2 class="overlay-title" id="announcement-title">Jimmy is choosing a color!</h2>
+                  <div class="overlay-avatar-slot" id="announcement-avatar-slot"></div>
+                </div>
+              </div>
+
+              <!-- Right: Chat panel -->
+              <div class="chat-column" id="game-chat-column"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           4. GAMEOVER SCREEN (§5.4)
+      ======================================================== -->
+      <section class="screen" id="screen-gameover" data-screen="gameover">
+        <div class="game-screen-wrapper">
+          <div class="game-top-bar">
+            <img src="/src/assets/logo.gif" alt="Logo" class="game-brand-logo" />
+          </div>
+
+          <div class="game-frame">
+            <header class="game-header">
+              <div class="header-left">
+                <span class="header-round-text">Game Over!</span>
+              </div>
+              <div class="header-status-mono">FINAL RESULTS</div>
+              <div class="header-right"></div>
+            </header>
+
+            <div class="game-columns">
+              <div class="players-panel" id="gameover-player-list"></div>
+
+              <div class="gameover-stage">
+                <div class="gameover-winner-wrap">
+                  <h1 class="gameover-title">Winner!</h1>
+                  <div id="gameover-winner-avatar-slot"></div>
+                  <div class="gameover-winner-name" id="gameover-winner-name">Jimmy</div>
+                  <div class="gameover-winner-score" id="gameover-winner-score">Total Points: 850</div>
+                </div>
+
+                <div class="gameover-runners-up" id="gameover-runners-list"></div>
+
+                <div class="gameover-actions">
+                  <button type="button" class="btn-play-again" id="btn-play-again">Play again</button>
+                  <button type="button" class="btn-back-lobby" id="btn-gameover-lobby">Back to lobby</button>
+                </div>
+              </div>
+
+              <div class="chat-column" id="gameover-chat-column"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
